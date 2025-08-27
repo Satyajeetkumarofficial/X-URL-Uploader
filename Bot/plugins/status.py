@@ -3,6 +3,7 @@ from pyrogram.types import Message
 from Bot.config import Config
 from pymongo import MongoClient
 from datetime import datetime
+import shutil
 
 # MongoDB connection
 mongo = MongoClient(Config.DATABASE_URL)
@@ -33,17 +34,26 @@ async def status_handler(client: Client, message: Message):
     today = datetime.utcnow().strftime("%Y-%m-%d")
     daily_tasks = tasks_col.count_documents({"date": today})
 
+    # Storage info
+    total, used, free = shutil.disk_usage("/")
+    total_gb = total // (2**30)
+    used_gb = used // (2**30)
+    free_gb = free // (2**30)
+
     text = (
         f"📊 **Bot Status**\n\n"
         f"👤 Total Users: **{total_users}**\n"
-        f"📝 Tasks Today: **{daily_tasks}**"
+        f"📝 Tasks Today: **{daily_tasks}**\n\n"
+        f"💾 **Storage:**\n"
+        f"Total: {total_gb} GB\n"
+        f"Used: {used_gb} GB\n"
+        f"Free: {free_gb} GB"
     )
 
     await message.reply_text(text)
 
 
 # ✅ Example - Jab bhi user koi task kare (file upload etc.)
-# Ye sirf samjhane ke liye hai, apne actual task wale code me insert karo
 async def add_task(user_id: int, task_type: str):
     today = datetime.utcnow().strftime("%Y-%m-%d")
     tasks_col.insert_one({
