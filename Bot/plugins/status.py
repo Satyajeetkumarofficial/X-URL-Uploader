@@ -1,6 +1,6 @@
 from pyrogram import Client, filters
 from pyrogram.types import Message
-from config import Config
+from Bot.config import Config
 from pymongo import MongoClient
 from datetime import datetime
 
