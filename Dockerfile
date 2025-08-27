@@ -1,17 +1,18 @@
-FROM xgorn/python-phantomjs:3.9
+FROM python:3.10-slim
 
-# Copy coding files to workdir
-COPY . /app/
-WORKDIR /app/
+# Install system deps
+RUN apt-get update && apt-get install -y \
+    ffmpeg wget unzip \
+    && rm -rf /var/lib/apt/lists/*
 
-ENV PYTHONUNBUFFERED=1
+# Set workdir
+WORKDIR /app
 
-# Copy requirements.txt to root
-COPY requirements.txt .
+# Copy project
+COPY . /app
 
-# Install dependencies
-RUN pip3 install --no-cache-dir -r requirements.txt
-RUN apt-get update
-RUN apt-get install -y ffmpeg
+# Install Python deps
+RUN pip install --no-cache-dir -r requirements.txt
 
-CMD python3 -m Bot
+# Run both bot + dummy healthcheck server
+CMD ["sh", "-c", "python3 healthcheck.py & python3 -m Bot"]
