@@ -10,8 +10,8 @@ WORKDIR /app
 
 COPY . /app
 
-# Install Python deps
+# Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Run both bot + dummy healthcheck server
+# Start healthcheck + bot
 CMD ["sh", "-c", "python3 healthcheck.py & python3 -m Bot"]
