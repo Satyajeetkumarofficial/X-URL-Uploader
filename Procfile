@@ -1,1 +1,1 @@
-FROM xgorn/xurluploader:latest
+worker: python3 -m Bot
